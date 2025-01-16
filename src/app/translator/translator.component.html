@@ -1,0 +1,94 @@
+<div class="dropdown-container">
+  <mat-form-field>
+    <mat-select class="selected" [(ngModel)]="sourceLanguage">
+      <form class="dropdown-search">
+        <mat-icon class="search-icon" matPrefix>search</mat-icon>
+        <input matInput [(ngModel)]="inputSearchKey" (ngModelChange)="filterInput()" name="inputSearchKey">
+      </form>
+      <mat-divider></mat-divider>
+      <mat-option *ngFor="let lang of filteredInputLanguages; let isLast = last" [value]="lang.countryCode" [style.display]="isLast ? 'none' : 'block'">
+        <span class="flag">{{lang.flag}}</span>
+        {{lang.language}}
+      </mat-option>      
+    </mat-select>
+  </mat-form-field>
+
+  <button class="swap" mat-icon-button color="primary" (click)="swapLanguages()">
+      <mat-icon class="icon">swap_horiz</mat-icon>
+  </button>
+
+  <mat-form-field>
+      <mat-select class="selected" [(ngModel)]="targetLanguage">
+        <form class="dropdown-search">
+          <mat-icon class="search-icon" matPrefix>search</mat-icon>
+          <input placeholder="Search" matInput [(ngModel)]="targetSearchKey" (ngModelChange)="filterTarget()" name="targetSearchKey">
+        </form>
+        <mat-divider></mat-divider>
+        <mat-option *ngFor="let lang of filteredTargetLanguages; let isLast = last" [value]="lang.countryCode" [style.display]="isLast ? 'none' : 'block'">
+          <span class="flag">{{lang.flag}}</span>
+          {{lang.language}}
+        </mat-option>
+      </mat-select>
+  </mat-form-field>
+</div>
+
+<mat-divider class="horizontal-divider"></mat-divider>
+
+<div class="textarea-container">
+  <div class="input-container">
+    <form>
+      <textarea maxlength="450" class="textarea"matInput placeholder="Enter text" [(ngModel)]="input" name="input"></textarea>
+    </form>
+    <div id="char-count">
+      <ng-container *ngIf="input">
+        <span class="count">{{this.input.length}}/450</span>
+      </ng-container>
+      <ng-container *ngIf="!input">
+        <span class="count">0/450</span>
+      </ng-container>
+    </div>
+</div>
+  
+  <mat-divider class="vertical-divider" vertical></mat-divider>
+  
+  <div class="translation-container">
+    <ng-container *ngIf="!waiting">
+      <form>
+          <textarea class="textarea" readonly matInput placeholder="Translation" [(ngModel)]="translation" name="translation"></textarea>
+      </form>
+    </ng-container> 
+    <ng-container *ngIf="waiting">
+      <mat-spinner></mat-spinner>
+    </ng-container>      
+  </div>
+</div>
+
+<div class="icon-container">
+  <div class="input-icons">
+    <div class="mic-container">
+      <button mat-icon-button (click)="voiceInput()">
+        <mat-icon color="primary" class="icon">mic</mat-icon>
+      </button>
+      <ng-container *ngIf="this.recognition.isListening">
+        <mat-progress-bar class="progress-bar" mode="indeterminate"></mat-progress-bar>
+      </ng-container> 
+    </div>
+    <button mat-icon-button (click)="speak(this.input, this.sourceLanguage)">
+      <mat-icon color="primary" class="icon">volume_up</mat-icon>
+    </button>
+  </div>
+  <div class="translation-icons">
+    <button mat-icon-button (click)="speak(this.translation, this.targetLanguage)">
+      <mat-icon color="primary" class="icon">volume_up</mat-icon>
+    </button>
+    <button mat-icon-button (click)="copy()">
+      <mat-icon color="primary" class="icon">content_copy</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="button-container">
+  <button class="translate-button" mat-raised-button color="primary" (click)="translate()">Translate</button>
+</div>
+
+
